@@ -6,29 +6,63 @@ from getpass import getpass
 import sys
 import os
 import re
-
-#Import the email modules we'll need
+import mimetypes
+from email.mime.multipart import MIMEMultipart
+from email import encoders
+from email.message import Message
+from email.mime.audio import MIMEAudio
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 
 textfile = open("textfile.txt",'rb')
+fileToSend = "TemperatureExtract.xlsx"
 
-#Open a plain text file for reading. For this example, assume that
-#the text file contains only ASCII characters.
-with textfile as fp:
-# open("textfile.txt", 'rb') as fp:
-	#Create a text/plain message
-	msg = MIMEText(fp.read())
+msg=MIMEMultipart()
 
-#me == sender's email address
-#you == the recipient's email address
+#define sender and recipent
 fromMe='fab.python@yahoo.com'
 toYou='fabienclement.desvignes@gmail.com'
 
 
-msg['Subject']='The contents of %s' %textfile
+msg['Subject']='The contents of log' #%s' %textfile
 msg['From']=fromMe
 msg['To']=toYou
+msg.preamble = "content"
 debuglevel = True
+
+ctype, encoding = mimetypes.guess_type(fileToSend)
+if ctype is None or encoding is not None:
+	ctype = "application/octet-stream"
+
+maintype, subtype = ctype.split("/", 1)
+
+if maintype == "text":
+	fp = open(fileToSend)
+	attachment = MIMEText(fp.read(), _subtype=subtype)
+	fp.close()
+elif maintype == "image":
+	fp = open(fileToSend, "rb")
+	attachment = MIMEImage(fp.read(), _subtype=subtype)
+	fp.close()
+elif maintype == "audio":
+	fp = open(fileToSend, "rb")
+	attachment = MIMEAudio(fp.read(), _subtype=subtype)
+	fp.close()
+else:
+	fp = open(fileToSend, "rb")
+	attachment = MIMEBase(maintype, subtype)
+	attachment.set_payload(fp.read())
+	fp.close()
+	encoders.encode_base64(attachment)
+attachment.add_header("Content-Disposition", "attachment", filename=fileToSend)
+msg.attach(attachment) 
+
+#Add text from file
+#with textfile as fp:
+#	fp = open("textfile.txt", 'rb')
+#msg = MIMEText(fp.read())
+#fp.close()
 
 #Define pw
 username = str('fab.python@yahoo.com')
@@ -39,7 +73,7 @@ passd = getpass('Password for "%s": ' %username)
 #envelope header.
 try:
 	server=smtplib.SMTP('smtp.mail.yahoo.com', 587)
-	server.set_debuglevel(debuglevel)
+	#server.set_debuglevel(debuglevel)
 	#server.ehlo()
 	server.starttls()
 	#server.ehlo()
