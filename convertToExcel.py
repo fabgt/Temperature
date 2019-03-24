@@ -1,6 +1,12 @@
 #!/usr/bin/python
 import xlsxwriter
 
+#Read data from textfile
+fp=open("textfile.txt",'rb')
+#data[i][]=fp.readline()
+data=fp.read()
+fp.close()
+
 #Create a new Excel file and add a worksheet
 workbook = xlsxwriter.Workbook('TemperatureExtract.xlsx')
 worksheet = workbook.add_worksheet('Temperature data')
@@ -16,6 +22,9 @@ worksheet.write('A1','Hello')
 
 #Text with formatting
 worksheet.write('A2', 'World', bold)
+
+#Text from textfile
+worksheet.write('A6', data)
 
 #Write some numbers, with row/column notation
 worksheet.write(2, 0, 123)
