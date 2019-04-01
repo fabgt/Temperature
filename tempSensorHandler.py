@@ -45,16 +45,24 @@ def read_temp():
   return temp_c #,temp_f
 
 #Print out the temperature until the program is stopped.
-while True:
- time_stamp=time.time()
- data=[time_stamp,read_temp()]
- print(data)
- try:
-	header="Temperature\n"
-	header+="This is a second line"
-	np.savetxt('textfile.txt',data,fmt='%.3e',newline='\n', header=header)
- except KeyboardInterrupt:
-	print('You cancelled the operation')
+with open('textfile.txt','w') as destination:
+ while True:
+  time_stamp=time.time()
+  data=[time_stamp,read_temp()]
+  print(data)
+
+ #with open('textfile.txt','w') as destination:
+
+#for line in destination:
+ 	#	print(line)	#do nothing
+  destination.write('%s\n' % data)
+
+ # try:
+	#header="Temperature\n"
+	#header+="This is a second line"
+	#np.savetxt('textfile.txt',data,fmt='%.3e',newline='\n', header=header)
+ #except KeyboardInterrupt:
+ #	print('You cancelled the operation')
 
  time.sleep(1)
 
