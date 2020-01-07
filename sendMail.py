@@ -21,7 +21,7 @@ fileToSend = "TemperatureExtract.xlsx"
 msg=MIMEMultipart()
 
 #define sender and recipent
-fromMe='fab.python@yahoo.com'
+fromMe='fabgt.python@gmail.com'
 toYou='fabienclement.desvignes@gmail.com'
 
 
@@ -65,19 +65,24 @@ msg.attach(attachment)
 #fp.close()
 
 #Define pw
-username = str('fab.python@yahoo.com')
+username = str('fabgt.python@gmail.com')
 passd = getpass('Password for "%s": ' %username)
 
 
 #Send the message via our own SMTP server, but don't include the 
 #envelope header.
 try:
-	server=smtplib.SMTP('smtp.mail.yahoo.com', 587)
+	server=smtplib.SMTP('smtp.gmail.com:587')
+	print('server instanciated')
 	#server.set_debuglevel(debuglevel)
-	#server.ehlo()
+	server.ehlo()
 	server.starttls()
+	print('start tls')
 	#server.ehlo()
+	print(passd)
+	print(username)
 	server.login(username,passd)
+	print('logged in')
 	try:
 		server.sendmail(fromMe, toYou, msg.as_string())
 	finally:
