@@ -25,10 +25,10 @@ fromMe='fabgt.python@gmail.com'
 toYou='fabienclement.desvignes@gmail.com'
 
 
-msg['Subject']='The contents of log' #%s' %textfile
+msg['Subject']='Issue with temperature logging' #%s' %textfile
 msg['From']=fromMe
 msg['To']=toYou
-msg.preamble = "content"
+msg.preamble = "issue with Thingspeak logging"
 debuglevel = True
 
 ctype, encoding = mimetypes.guess_type(fileToSend)
@@ -66,21 +66,17 @@ msg.attach(attachment)
 
 #Define pw
 username = str('fabgt.python@gmail.com')
-passd = getpass('Password for "%s": ' %username)
+passd = str('2k3uh26fd') #getpass('Password for "%s": ' %username)
 
 
 #Send the message via our own SMTP server, but don't include the 
 #envelope header.
 try:
 	server=smtplib.SMTP('smtp.gmail.com:587')
-	print('server instanciated')
 	#server.set_debuglevel(debuglevel)
 	server.ehlo()
 	server.starttls()
-	print('start tls')
 	#server.ehlo()
-	print(passd)
-	print(username)
 	server.login(username,passd)
 	print('logged in')
 	try:
