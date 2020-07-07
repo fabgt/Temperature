@@ -75,7 +75,7 @@ with open('textfile.txt','w') as destination:
     conn.close()
   except:
     print "Thingspeak connection failed"
-
+    execfile("sendMail.py")
   #Wait 5 min before sending again
-  time.sleep(30)
+  time.sleep(120)
 
