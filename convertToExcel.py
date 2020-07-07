@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import xlsxwriter
+import time
 
 #Define all functions
 
@@ -14,13 +15,13 @@ def ExtractDateAndTempPosition(stringFromFile):
   print(indexDate)
   if stringFromFile[indexDate]=='[':
    global dateStart
-   dateStart=indexDate+1
+   dateStart=indexDate+2
    print("dateStart index is equal to: ", dateStart)
    break
 
  #Find index end Date
  for indexDateBis in range(0, (indexDateMax-1)):
-  if stringFromFile[indexDateBis]==',':
+  if stringFromFile[indexDateBis]=='.':
    global dateEnd
    dateEnd=indexDateBis
    print("dateEnd index is equal to: ", dateEnd)
@@ -28,8 +29,12 @@ def ExtractDateAndTempPosition(stringFromFile):
 
  #Determine temperature first and last character position
  global tempStart
- tempStart=dateEnd+2
- print("tempStart index is equal to: ",tempStart)
+ for indexTemp in range(0, (indexDateMax-1)):
+  if stringFromFile[indexTemp]==',':
+   global tempStart
+   tempStart=indexTemp+2
+   print("tempStart index is equal to: ",tempStart)
+   break
  for indexTemp in range(0, (indexDateMax-1)):
   if stringFromFile[indexTemp]==']':
    global tempEnd
@@ -56,6 +61,7 @@ def ConvertRawDateToDate(dateRawValue):
  "Convert Raw Date to readable excel format date"
  global dateValue
  dateValue=dateRawValue
+ print("formated time :", dateValue)
 
 def CopyDateAndTempToExcel(columnDate,columnTemp,row,dateValue,tempValue):
  "Copy each date and temperature logged in text file to excel file"
@@ -81,7 +87,7 @@ tempValue=''
 workbook = xlsxwriter.Workbook('TemperatureExtract.xlsx')
 worksheet = workbook.add_worksheet('Temperature data')
 
-#Widen the forst column to make the text clearer
+#Widen the first column to make the text clearer
 worksheet.set_column('A:A', 20)
 
 fp=open("textfile.txt",'r')
@@ -97,8 +103,8 @@ while line: #for stringFromFile in data:
   line=fp.readline()
   print(line)
   if line=='':
-   print("Enf Of file")
-   break
+    print("Enf Of file")
+    break
   ExtractDateAndTempPosition(line)
   ExtractDateAndTemp(line,dateStart,dateEnd,tempStart,tempEnd)
   ConvertRawDateToDate(dateRawValue)
@@ -106,11 +112,6 @@ while line: #for stringFromFile in data:
 
   row=row+1
 fp.close()
+print('done')
 workbook.close()
-
-
-#bold = workbook.add_format({'bold': True})
-
-#Text with formatting
-#worksheet.write('A2', 'World', bold)
 
